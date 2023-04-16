@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -19,6 +19,13 @@ const LoginPage = () => {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
+
+    const { success } = await res.json();
+
+    if (success) {
+      const redirect = searchParams.get("redirect");
+      router.push(redirect || "/");
+    }
   };
 
   return (

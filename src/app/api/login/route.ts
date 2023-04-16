@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   if (body.email === "admin@gmail.com" && body.password === "admin") {
-    const token = await new SignJWT({ usrename: body.username })
+    const token = await new SignJWT({ username: body.username })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("2h")
