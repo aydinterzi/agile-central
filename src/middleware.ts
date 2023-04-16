@@ -1,34 +1,33 @@
-import { verifyJwtToken } from "./libs/auth";
-import { NextRequest, NextResponse } from "next/server";
+import { withClerkMiddleware, getAuth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const AUTH_PAGES = ["/login", "/register"];
+// Set the paths that don't require the user to be signed in
+const publicPaths = ["/login*", "/sign-up*"];
 
-const isAuthPages = (url: string) =>
-  AUTH_PAGES.some((page) => page.startsWith(url));
+const isPublic = (path: string) => {
+  return publicPaths.find((x) =>
+    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")))
+  );
+};
 
-export async function middleware(request: NextRequest) {
-  const { url, nextUrl, cookies } = request;
-  const { value: token } = cookies.get("token") ?? { value: null };
-
-  const hasVerifiedToken = token && (await verifyJwtToken(token));
-  const isAuthPageRequested = isAuthPages(nextUrl.pathname);
-
-  if (isAuthPageRequested) {
-    if (!hasVerifiedToken) {
-      return NextResponse.next();
-    }
-    return NextResponse.redirect(new URL("/", url));
+export default withClerkMiddleware((request: NextRequest) => {
+  if (isPublic(request.nextUrl.pathname)) {
+    return NextResponse.next();
   }
+  // if the user is not signed in redirect them to the sign in page.
+  const { userId } = getAuth(request);
 
-  if (!hasVerifiedToken) {
-    const searchParams = new URLSearchParams(nextUrl.searchParams);
-    searchParams.set("redirect", nextUrl.pathname);
-    return NextResponse.redirect(new URL(`login?${searchParams}`, url));
+  if (!userId) {
+    // redirect the users to /pages/sign-in/[[...index]].ts
+
+    const signInUrl = new URL("/login", request.url);
+    signInUrl.searchParams.set("redirect_url", request.url);
+    return NextResponse.redirect(signInUrl);
   }
-
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/login", "/register", "/"],
+  matcher: "/((?!_next/image|_next/static|favicon.ico).*)",
 };

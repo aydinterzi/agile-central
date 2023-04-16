@@ -1,5 +1,5 @@
 import React from "react";
-
+import { UserProfile } from "@clerk/nextjs/app-beta";
 const Navbar = () => {
   return (
     <div className="navbar bg-base-100">
