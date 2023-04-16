@@ -11,6 +11,7 @@ export async function middleware(request: NextRequest) {
   const { value: token } = cookies.get("token") ?? { value: null };
 
   const hasVerifiedToken = token && (await verifyJwtToken(token));
+
   const isAuthPageRequested = isAuthPages(nextUrl.pathname);
 
   if (isAuthPageRequested) {
@@ -30,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/"],
+  matcher: ["/login", "/register", "/calendar"],
 };

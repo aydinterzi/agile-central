@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  password String    @db.VarChar(255)
+  email    String    @unique(map: "email") @db.VarChar(255)
+  role     String    @db.VarChar(255)
+  holidays Holiday[]
+}
+
+model Sprint {
+  id        Int       @id @default(autoincrement())
+  startDate DateTime  @db.DateTime(0)
+  endDate   DateTime  @db.DateTime(0)
+  holidays  Holiday[]
+}
+
+model Holiday {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  sprintId    Int
+  holidayDate DateTime @db.DateTime(0)
+  user        User?    @relation(fields: [userId], references: [id])
+  sprint      Sprint?  @relation(fields: [sprintId], references: [id])
+}

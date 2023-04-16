@@ -1,11 +1,21 @@
+import { PrismaClient } from "@prisma/client";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const body = await request.json();
+const prisma = new PrismaClient();
 
-  if (body.email === "admin@gmail.com" && body.password === "admin") {
-    const token = await new SignJWT({ username: body.username })
+export async function POST(request: Request) {
+  const { email, password } = await request.json();
+  const allUsers = await prisma.user.findMany();
+  console.log(allUsers);
+  try {
+    const user = await prisma.user.findUnique({ where: { email: email } });
+    console.log(user);
+    if (!user || user.password !== password) {
+      return NextResponse.json({ success: false });
+    }
+
+    const token = await new SignJWT({ email })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("2h")
@@ -19,7 +29,8 @@ export async function POST(request: Request) {
     });
 
     return response;
+  } catch (err) {
+    console.log("a");
+    return NextResponse.json({ success: false });
   }
-
-  return NextResponse.json({ success: false });
 }
