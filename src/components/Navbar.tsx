@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Navbar = () => {
@@ -9,7 +10,7 @@ const Navbar = () => {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a>Calendar</a>
+            <Link href="/calendar">Calendar</Link>
           </li>
         </ul>
       </div>

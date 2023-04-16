@@ -6,11 +6,8 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
-  const allUsers = await prisma.user.findMany();
-  console.log(allUsers);
   try {
     const user = await prisma.user.findUnique({ where: { email: email } });
-    console.log(user);
     if (!user || user.password !== password) {
       return NextResponse.json({ success: false });
     }
@@ -30,7 +27,6 @@ export async function POST(request: Request) {
 
     return response;
   } catch (err) {
-    console.log("a");
     return NextResponse.json({ success: false });
   }
 }
