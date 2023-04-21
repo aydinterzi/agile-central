@@ -10,3 +10,25 @@ export async function GET(request: NextRequest) {
   });
   return NextResponse.json(holidays);
 }
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  console.log(body);
+  const holiday = await prisma.holiday.create({
+    data: {
+      holidayDate: body.holidayDate,
+      user: {
+        connect: {
+          id: body.userId,
+        },
+      },
+
+      sprint: {
+        connect: {
+          id: body.sprintId,
+        },
+      },
+    },
+  });
+  return NextResponse.json(holiday);
+}
