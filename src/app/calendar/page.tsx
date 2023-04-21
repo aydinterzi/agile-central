@@ -1,17 +1,18 @@
-"use client";
-import { useState, useEffect } from "react";
+import EnterHoliday from "@/components/EnterHoliday";
+import Holidays from "@/components/Holidays";
 
-const Calendar = () => {
-  const fetchHolidays = async () => {
-    const res = await fetch("/api/holiday");
-    const data = await res.json();
-    console.log(data);
-  };
-  useEffect(() => {
-    fetchHolidays();
-  }, []);
+async function fetchHolidays() {
+  const res = await fetch(`${process.env.BASE_FETCH_URL}api/holiday`);
+  const data = await res.json();
+  return data;
+}
 
-  return <div>Calendar</div>;
-};
-
-export default Calendar;
+export default async function Page() {
+  const holidays = await fetchHolidays();
+  return (
+    <div>
+      <EnterHoliday />
+      <Holidays holidays={holidays} />
+    </div>
+  );
+}

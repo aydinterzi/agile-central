@@ -30,4 +30,8 @@ model Holiday {
   holidayDate DateTime @db.DateTime(0)
   user        User?    @relation(fields: [userId], references: [id])
   sprint      Sprint?  @relation(fields: [sprintId], references: [id])
+  
+
+  @@index([userId])
+  @@index([sprintId])
 }
