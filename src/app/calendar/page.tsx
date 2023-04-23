@@ -12,7 +12,7 @@ export async function fetchHolidays() {
 export default async function Page() {
   const holidays = await fetchHolidays();
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <EnterHoliday />
       <Holidays holidays={holidays} />
     </div>

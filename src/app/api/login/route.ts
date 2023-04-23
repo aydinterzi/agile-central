@@ -12,11 +12,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false });
     }
 
-    const token = await new SignJWT({ email })
+    const token = await new SignJWT({ email, id: user.id })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("2h")
-      .sign(new TextEncoder().encode(process.env.JWT_SECRET));
+      .sign(new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET));
 
     const response = NextResponse.json({ success: true });
     response.cookies.set({

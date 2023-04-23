@@ -2,10 +2,11 @@ import React from "react";
 
 const Holidays = ({ holidays }) => {
   return (
-    <div>
+    <div className="mt-10 flex flex-col gap-2">
       {holidays.map((holiday) => (
         <div key={holiday.id}>
-          {holiday.user.email} - {holiday.holidayDate}
+          <span className="text-lg font-semibold">{holiday.user.email}</span> -{" "}
+          {holiday.holidayDate}
         </div>
       ))}
     </div>
