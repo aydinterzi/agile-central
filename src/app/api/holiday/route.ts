@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  console.log(body);
   const holiday = await prisma.holiday.create({
     data: {
       holidayDate: body.holidayDate,
