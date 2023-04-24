@@ -1,12 +1,12 @@
 "use client";
 
+import { formatDateToLocalDateString } from "@/utils/date";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Holidays = ({ holidays }) => {
   const { refresh } = useRouter();
   const handleDelete = async (id: number) => {
-    console.log(id);
     const res = await fetch(`api/holiday/${id}`, {
       method: "DELETE",
     });
@@ -18,7 +18,7 @@ const Holidays = ({ holidays }) => {
       {holidays.map((holiday) => (
         <div className="flex items-center gap-2" key={holiday.id}>
           <span className="text-lg font-semibold">{holiday.user.email}</span> -{" "}
-          {holiday.holidayDate}
+          {formatDateToLocalDateString(holiday.holidayDate)}
           <div>
             <button
               onClick={() => handleDelete(holiday.id)}
