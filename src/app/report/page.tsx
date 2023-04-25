@@ -1,24 +1,32 @@
 "use client";
 
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
+  const auth = useAuth();
+  const [statuses, setStatuses] = useState([]);
+  useEffect(() => {
+    const res = fetch("/api/status")
+      .then((r) => r.json())
+      .then((r) => setStatuses(r));
+  }, []);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e.currentTarget);
+
     const formData = new FormData(e.currentTarget);
     const description = formData.get("description");
-    const status = formData.get("status");
-
+    const status = +formData.get("status");
     const res = fetch("/api/report", {
       method: "POST",
       body: JSON.stringify({
         description,
-        statusId: 1,
+        status,
         sprintId: 1,
-        userId: 1,
+        userId: auth.id,
       }),
     });
     router.refresh();
@@ -37,8 +45,11 @@ const Page = () => {
         ></textarea>
         <select name="status" className="select select-bordered  w-full">
           <option disabled>Select Status</option>
-          <option>Bug</option>
-          <option>Opened</option>
+          {statuses.map((status) => (
+            <option key={status.id} value={status.id}>
+              {status.name}
+            </option>
+          ))}
         </select>
         <button className="btn btn-primary self-end">Submit</button>
       </form>
