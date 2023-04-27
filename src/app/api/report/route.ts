@@ -26,3 +26,15 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(report);
 }
+
+export async function GET(req: NextRequest) {
+  const reports = await prisma.report.findMany({
+    include: {
+      status: true,
+      sprint: true,
+      user: true,
+    },
+  });
+
+  return NextResponse.json(reports);
+}
